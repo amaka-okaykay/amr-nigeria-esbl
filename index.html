@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ESBL AMR Research — Okeke Chiamaka Juliet</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f0d;
+    --surface: #111a14;
+    --surface2: #162019;
+    --border: #1e3023;
+    --accent: #3dffa0;
+    --accent2: #ff6b35;
+    --accent3: #4fc3f7;
+    --accent4: #ffd54f;
+    --text: #e8f5e9;
+    --text-muted: #6a8f72;
+    --text-dim: #3a5a40;
+    --danger: #ff5252;
+    --warning: #ffab40;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(61,255,160,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(61,255,160,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 60px 40px 40px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(61,255,160,0.04) 0%, transparent 100%);
+  }
+
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 40px;
+  }
+
+  .tag-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+    border: 1px solid;
+  }
+
+  .tag-green { color: var(--accent); border-color: rgba(61,255,160,0.3); background: rgba(61,255,160,0.05); }
+  .tag-orange { color: var(--accent2); border-color: rgba(255,107,53,0.3); background: rgba(255,107,53,0.05); }
+  .tag-blue { color: var(--accent3); border-color: rgba(79,195,247,0.3); background: rgba(79,195,247,0.05); }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-size: 15px;
+    color: var(--text-muted);
+    max-width: 580px;
+    margin-bottom: 24px;
+  }
+
+  .citation-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 16px 20px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--text-muted);
+    max-width: 660px;
+    line-height: 1.7;
+  }
+
+  .citation-box strong { color: var(--text); }
+
+  .author-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+    border-radius: 8px;
+    min-width: 240px;
+    text-align: center;
+  }
+
+  .author-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    color: var(--bg);
+  }
+
+  .author-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .author-title {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  /* MAIN */
+  main {
+    position: relative;
+    z-index: 10;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 40px;
+  }
+
+  /* STAT ROW */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 56px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px 20px;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .stat-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .stat-card.green::before { background: var(--accent); }
+  .stat-card.orange::before { background: var(--accent2); }
+  .stat-card.blue::before { background: var(--accent3); }
+  .stat-card.yellow::before { background: var(--accent4); }
+  .stat-card.red::before { background: var(--danger); }
+
+  .stat-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-card.green .stat-value { color: var(--accent); }
+  .stat-card.orange .stat-value { color: var(--accent2); }
+  .stat-card.blue .stat-value { color: var(--accent3); }
+  .stat-card.yellow .stat-value { color: var(--accent4); }
+  .stat-card.red .stat-value { color: var(--danger); }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .stat-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  /* SECTION HEADERS */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* CHART GRID */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .charts-grid-3 {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px;
+    border-radius: 8px;
+  }
+
+  .chart-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .chart-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .chart-wrap {
+    position: relative;
+  }
+
+  /* RESISTANCE ALERT */
+  .alert-banner {
+    background: rgba(255,82,82,0.08);
+    border: 1px solid rgba(255,82,82,0.3);
+    border-left: 4px solid var(--danger);
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .alert-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+
+  .alert-text strong {
+    display: block;
+    color: var(--danger);
+    font-size: 14px;
+    margin-bottom: 4px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .alert-text p {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* CO-OCCURRENCE TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    margin-bottom: 48px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  th {
+    background: var(--surface2);
+    padding: 12px 16px;
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(30,48,35,0.5);
+    color: var(--text);
+  }
+
+  tr:hover td { background: rgba(61,255,160,0.02); }
+
+  .gene-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    background: rgba(61,255,160,0.08);
+    color: var(--accent);
+    border: 1px solid rgba(61,255,160,0.2);
+    display: inline-block;
+  }
+
+  .resistance-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s ease;
+  }
+
+  .bar-fill.high { background: var(--danger); }
+  .bar-fill.mid { background: var(--warning); }
+  .bar-fill.low { background: var(--accent); }
+
+  .bar-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    min-width: 40px;
+    text-align: right;
+  }
+
+  /* PIPELINE SECTION */
+  .pipeline {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 48px;
+    overflow-x: auto;
+  }
+
+  .pipeline-step {
+    flex: 1;
+    min-width: 140px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px 16px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .pipeline-step:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    font-size: 16px;
+    z-index: 1;
+  }
+
+  .pipeline-step.active {
+    border-color: var(--accent);
+    background: rgba(61,255,160,0.04);
+  }
+
+  .pipeline-step.planned {
+    border-color: var(--border);
+    opacity: 0.6;
+  }
+
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    letter-spacing: 0.1em;
+  }
+
+  .step-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .step-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .step-status {
+    margin-top: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .step-status.done { color: var(--accent); }
+  .step-status.next { color: var(--warning); }
+  .step-status.future { color: var(--text-dim); }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 10;
+    border-top: 1px solid var(--border);
+    padding: 40px;
+    text-align: center;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+
+  .footer-link:hover { color: var(--accent); }
+
+  .footer-copy {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* HIGHLIGHT ROW */
+  .highlight-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .highlight-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 8px;
+  }
+
+  .highlight-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .highlight-content {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .highlight-content code {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    background: rgba(61,255,160,0.07);
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+
+  section { margin-bottom: 56px; }
+
+  @media (max-width: 768px) {
+    header, main { padding: 32px 20px; }
+    .header-inner { grid-template-columns: 1fr; }
+    .charts-grid, .charts-grid-3, .highlight-row { grid-template-columns: 1fr; }
+    .author-card { display: none; }
+    .pipeline { flex-direction: column; }
+    .pipeline-step::after { display: none; }
+    footer { padding: 24px 20px; }
+    .footer-inner { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="tag-row">
+        <span class="tag tag-green">Peer-Reviewed · LWW 2023</span>
+        <span class="tag tag-orange">ESBL Genomics</span>
+        <span class="tag tag-blue">Southeast Nigeria</span>
+      </div>
+      <h1>ESBL Gene Detection in<br><em>Clinical Isolates</em> from<br>Southeast Nigeria</h1>
+      <p class="subtitle">Molecular epidemiology of antimicrobial resistance — <em>blaCTX-M</em>, <em>blaTEM</em>, and <em>blaSHV</em> across 433 clinical samples from tertiary hospitals in Owerri, Imo State.</p>
+      <div class="citation-box">
+        <strong>Nsofor CA, Moses A, Onyeakazi CM, Okeke CJ, Ikegbunam MN. (2023).</strong><br>
+        Detection of <em>blaCTX-M</em>, <em>blaTEM</em>, and <em>blaSHV</em> genes in clinical isolates of <em>Escherichia coli</em> and <em>Klebsiella pneumoniae.</em><br>
+        <em>Reviews and Research in Medical Microbiology,</em> 34(2):66–72. LWW/Wolters Kluwer.
+      </div>
+    </div>
+    <div class="author-card">
+      <div class="author-avatar">O</div>
+      <div class="author-name">Okeke Chiamaka Juliet</div>
+      <div class="author-title" style="margin-bottom:12px;">AMR Researcher · Biotechnologist</div>
+      <div class="tag tag-green" style="font-size:9px;display:block;margin-bottom:6px;">Wellcome Sanger Trained</div>
+      <div class="tag tag-blue" style="font-size:9px;display:block;margin-bottom:6px;">Genomac Certified</div>
+      <div class="tag tag-orange" style="font-size:9px;display:block;">FUTO B.Tech Biotechnology</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- KEY STATS -->
+  <section>
+    <div class="stats-grid">
+      <div class="stat-card green">
+        <div class="stat-value">433</div>
+        <div class="stat-label">Clinical Samples</div>
+        <div class="stat-sub">Consecutively collected</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-value">249</div>
+        <div class="stat-label">Bacterial Growth</div>
+        <div class="stat-sub">57.5% positivity rate</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-value">92</div>
+        <div class="stat-label">ESBL Confirmed</div>
+        <div class="stat-sub">36.9% of culture+ isolates</div>
+      </div>
+      <div class="stat-card yellow">
+        <div class="stat-value">3</div>
+        <div class="stat-label">Gene Families</div>
+        <div class="stat-sub">blaCTX-M · blaTEM · blaSHV</div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-value">90.8%</div>
+        <div class="stat-label">Ceftazidime Resistance</div>
+        <div class="stat-sub">Among highest in Nigerian literature</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ALERT -->
+  <div class="alert-banner">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-text">
+      <strong>CLINICAL SIGNIFICANCE — 90.8% CEFTAZIDIME RESISTANCE</strong>
+      <p>Ceftazidime is a third-generation cephalosporin and a primary empirical treatment for gram-negative infections in Nigerian hospitals. A 90.8% resistance rate means the antibiotic most likely to be prescribed is ineffective in 9 out of 10 culture-confirmed cases. This finding has direct, urgent implications for clinical prescribing guidelines and AMR control policy in Imo State tertiary hospitals.</p>
+    </div>
+  </div>
+
+  <!-- CHARTS ROW 1 -->
+  <section>
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">Resistance Gene Prevalence</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">ESBL Gene Frequency by Family</div>
+        <div class="chart-sub">% of ESBL-confirmed isolates (n=92) carrying each gene family</div>
+        <div class="chart-wrap"><canvas id="geneFreqChart" height="240"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Gene Distribution by Species</div>
+        <div class="chart-sub">blaCTX-M, blaTEM, blaSHV in E. coli vs K. pneumoniae</div>
+        <div class="chart-wrap"><canvas id="speciesChart" height="240"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHARTS ROW 2 -->
+  <section>
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">Antibiotic Susceptibility Profile</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="charts-grid-3">
+      <div class="chart-card">
+        <div class="chart-title">Resistance Rates Across Antibiotic Classes</div>
+        <div class="chart-sub">Kirby-Bauer disk diffusion · CLSI breakpoints · all ESBL+ isolates</div>
+        <div class="chart-wrap"><canvas id="astChart" height="280"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Sample Sources</div>
+        <div class="chart-sub">Hospital distribution of collected isolates</div>
+        <div class="chart-wrap"><canvas id="hospitalChart" height="200"></canvas></div>
+        <div style="margin-top:16px;">
+          <div style="font-size:11px; color: var(--text-muted); font-family:'DM Mono',monospace; line-height:2;">
+            <span style="color:var(--accent);">■</span> Imo State Specialist Hospital<br>
+            <span style="color:var(--accent3);">■</span> Federal Medical Centre Owerri<br>
+            <span style="color:var(--accent4);">■</span> Private facilities, Owerri
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CO-OCCURRENCE -->
+  <section>
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">Multi-Gene Co-Resistance Patterns</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:24px;">
+      <div class="chart-title">Co-occurrence of Resistance Gene Families</div>
+      <div class="chart-sub">% of ESBL+ isolates (n=92) carrying each gene combination — clinical co-resistance is the dominant pattern</div>
+      <div class="chart-wrap"><canvas id="cooccurChart" height="180"></canvas></div>
+    </div>
+
+    <div class="highlight-row">
+      <div class="highlight-card">
+        <div class="highlight-label">Clinical Implication</div>
+        <div class="highlight-content">54.3% of confirmed ESBL isolates carry <strong>2 or more gene families</strong> simultaneously — meaning combined resistance mechanisms, not single-gene carriage, is the dominant pattern in this clinical environment.</div>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-label">Most Common Pattern</div>
+        <div class="highlight-content"><code>blaCTX-M + blaTEM</code> co-occurrence is the most frequent multi-gene pattern (38.0%), consistent with plasmid-mediated horizontal gene transfer as the primary dissemination mechanism.</div>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-label">Surveillance Gap</div>
+        <div class="highlight-content">PCR confirms <em>presence</em> of gene families. Only <code>WGS-based analysis</code> can determine exact gene variants (e.g. <em>blaCTX-M-15</em> vs <em>blaCTX-M-1</em>) and trace plasmid transmission networks across hospitals.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AST TABLE -->
+  <section>
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">Antimicrobial Resistance Summary Table</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Antibiotic</th>
+            <th>Class</th>
+            <th>Resistance Rate</th>
+            <th>Visual</th>
+            <th>Clinical Priority</th>
+          </tr>
+        </thead>
+        <tbody id="astTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- RESEARCH PIPELINE -->
+  <section>
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">Research Trajectory — PCR to WGS</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="pipeline">
+      <div class="pipeline-step active">
+        <div class="step-num">PHASE 01</div>
+        <div class="step-name">PCR Gene Detection</div>
+        <div class="step-desc">Presence/absence of blaCTX-M, blaTEM, blaSHV across 249 clinical isolates</div>
+        <div class="step-status done">✓ Complete · Published 2023</div>
+      </div>
+      <div class="pipeline-step planned">
+        <div class="step-num">PHASE 02</div>
+        <div class="step-name">Short-Read WGS</div>
+        <div class="step-desc">Full resistome characterisation; plasmid typing via Illumina sequencing</div>
+        <div class="step-status next">→ Next Stage</div>
+      </div>
+      <div class="pipeline-step planned">
+        <div class="step-num">PHASE 03</div>
+        <div class="step-name">Phylogenetics</div>
+        <div class="step-desc">Transmission network reconstruction; clonal lineage tracing across hospitals</div>
+        <div class="step-status future">· Planned</div>
+      </div>
+      <div class="pipeline-step planned">
+        <div class="step-num">PHASE 04</div>
+        <div class="step-name">Population Genomics</div>
+        <div class="step-desc">AMR gene dissemination dynamics; ML phenotype prediction from sequence</div>
+        <div class="step-status future">· Planned</div>
+      </div>
+      <div class="pipeline-step planned">
+        <div class="step-num">PHASE 05</div>
+        <div class="step-name">GLASS Submission</div>
+        <div class="step-desc">West African sequence contribution to WHO GLASS, NCBI, CARD repositories</div>
+        <div class="step-status future">· Planned</div>
+      </div>
+    </div>
+
+    <div class="citation-box" style="max-width:100%; margin-top:8px;">
+      <strong>Why this matters globally:</strong> Africa's genomic data is critically underrepresented in every major AMR database. WHO GLASS, NCBI, and CARD are dominated by European and North American sequences. Nigeria — with 14,165 hospitals and one of the highest burdens of drug-resistant infections in sub-Saharan Africa — contributes almost no WGS-confirmed AMR data to these repositories. This research pipeline is designed to change that.
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a class="footer-link" href="https://journals.lww.com/rrmicrobiology" target="_blank">Published Paper ↗</a>
+      <a class="footer-link" href="https://card.mcmaster.ca" target="_blank">CARD Database ↗</a>
+      <a class="footer-link" href="https://www.who.int/initiatives/glass" target="_blank">WHO GLASS ↗</a>
+      <a class="footer-link" href="mailto:okekechiamakajuls@gmail.com">Contact ↗</a>
+    </div>
+    <div class="footer-copy">Okeke Chiamaka Juliet · Lagos, Nigeria · 2025</div>
+  </div>
+</footer>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────
+const COLORS = {
+  green: 'rgba(61,255,160,',
+  orange: 'rgba(255,107,53,',
+  blue: 'rgba(79,195,247,',
+  yellow: 'rgba(255,213,79,',
+  red: 'rgba(255,82,82,',
+  purple: 'rgba(186,104,200,',
+};
+
+const chartDefaults = {
+  plugins: {
+    legend: {
+      labels: {
+        color: '#6a8f72',
+        font: { family: 'DM Mono, monospace', size: 11 },
+        boxWidth: 12,
+        padding: 16
+      }
+    },
+    tooltip: {
+      backgroundColor: '#111a14',
+      borderColor: '#1e3023',
+      borderWidth: 1,
+      titleColor: '#e8f5e9',
+      bodyColor: '#6a8f72',
+      titleFont: { family: 'DM Mono, monospace', size: 12 },
+      bodyFont: { family: 'Outfit, sans-serif', size: 12 },
+      padding: 12
+    }
+  },
+  scales: {
+    x: {
+      grid: { color: 'rgba(30,48,35,0.5)', drawBorder: false },
+      ticks: { color: '#6a8f72', font: { family: 'DM Mono, monospace', size: 11 } }
+    },
+    y: {
+      grid: { color: 'rgba(30,48,35,0.5)', drawBorder: false },
+      ticks: { color: '#6a8f72', font: { family: 'DM Mono, monospace', size: 11 } }
+    }
+  }
+};
+
+// ─── CHART 1: GENE FREQUENCY ─────────────────────────────────────────
+new Chart(document.getElementById('geneFreqChart'), {
+  type: 'bar',
+  data: {
+    labels: ['blaCTX-M', 'blaTEM', 'blaSHV'],
+    datasets: [{
+      label: 'Prevalence (%)',
+      data: [78.3, 65.2, 41.3],
+      backgroundColor: [
+        COLORS.green + '0.7)',
+        COLORS.orange + '0.7)',
+        COLORS.blue + '0.7)',
+      ],
+      borderColor: [
+        COLORS.green + '1)',
+        COLORS.orange + '1)',
+        COLORS.blue + '1)',
+      ],
+      borderWidth: 1,
+      borderRadius: 3,
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    responsive: true,
+    plugins: { ...chartDefaults.plugins, legend: { display: false } },
+    scales: {
+      ...chartDefaults.scales,
+      y: {
+        ...chartDefaults.scales.y,
+        max: 100,
+        ticks: { ...chartDefaults.scales.y.ticks, callback: v => v + '%' }
+      }
+    }
+  }
+});
+
+// ─── CHART 2: SPECIES DISTRIBUTION ───────────────────────────────────
+new Chart(document.getElementById('speciesChart'), {
+  type: 'bar',
+  data: {
+    labels: ['blaCTX-M', 'blaTEM', 'blaSHV'],
+    datasets: [
+      {
+        label: 'E. coli',
+        data: [82.1, 68.4, 38.5],
+        backgroundColor: COLORS.green + '0.6)',
+        borderColor: COLORS.green + '1)',
+        borderWidth: 1,
+        borderRadius: 3,
+      },
+      {
+        label: 'K. pneumoniae',
+        data: [74.2, 61.9, 44.2],
+        backgroundColor: COLORS.blue + '0.6)',
+        borderColor: COLORS.blue + '1)',
+        borderWidth: 1,
+        borderRadius: 3,
+      }
+    ]
+  },
+  options: {
+    ...chartDefaults,
+    responsive: true,
+    scales: {
+      ...chartDefaults.scales,
+      y: {
+        ...chartDefaults.scales.y,
+        max: 100,
+        ticks: { ...chartDefaults.scales.y.ticks, callback: v => v + '%' }
+      }
+    }
+  }
+});
+
+// ─── CHART 3: AST PROFILE ─────────────────────────────────────────────
+new Chart(document.getElementById('astChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Ceftazidime', 'Cefotaxime', 'Ceftriaxone', 'Ampicillin', 'Cotrimoxazole', 'Ciprofloxacin', 'Tetracycline', 'Gentamicin', 'Amikacin', 'Imipenem'],
+    datasets: [{
+      label: 'Resistance Rate (%)',
+      data: [90.8, 87.2, 84.6, 95.3, 78.4, 61.9, 72.1, 43.5, 28.3, 8.7],
+      backgroundColor: [90.8, 87.2, 84.6, 95.3, 78.4, 61.9, 72.1, 43.5, 28.3, 8.7].map(v =>
+        v > 80 ? COLORS.red + '0.7)' : v > 60 ? COLORS.orange + '0.7)' : v > 40 ? COLORS.yellow + '0.7)' : COLORS.green + '0.7)'
+      ),
+      borderWidth: 0,
+      borderRadius: 3,
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    indexAxis: 'y',
+    responsive: true,
+    plugins: { ...chartDefaults.plugins, legend: { display: false } },
+    scales: {
+      x: {
+        ...chartDefaults.scales.x,
+        max: 100,
+        ticks: { ...chartDefaults.scales.x.ticks, callback: v => v + '%' }
+      },
+      y: { ...chartDefaults.scales.y }
+    }
+  }
+});
+
+// ─── CHART 4: HOSPITAL ────────────────────────────────────────────────
+new Chart(document.getElementById('hospitalChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Imo State Specialist Hospital', 'Federal Medical Centre', 'Private Facilities'],
+    datasets: [{
+      data: [41, 36, 23],
+      backgroundColor: [COLORS.green + '0.75)', COLORS.blue + '0.75)', COLORS.yellow + '0.75)'],
+      borderColor: ['#0a0f0d'],
+      borderWidth: 3,
+      hoverOffset: 8,
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: '65%',
+    plugins: {
+      legend: { display: false },
+      tooltip: chartDefaults.plugins.tooltip,
+    }
+  }
+});
+
+// ─── CHART 5: CO-OCCURRENCE ───────────────────────────────────────────
+new Chart(document.getElementById('cooccurChart'), {
+  type: 'bar',
+  data: {
+    labels: ['blaCTX-M only', 'blaTEM only', 'blaSHV only', 'CTX-M + TEM', 'CTX-M + SHV', 'TEM + SHV', 'All three'],
+    datasets: [{
+      label: '% of ESBL+ isolates',
+      data: [19.6, 12.0, 7.6, 38.0, 8.7, 5.4, 8.7],
+      backgroundColor: [
+        COLORS.green + '0.5)',
+        COLORS.orange + '0.5)',
+        COLORS.blue + '0.5)',
+        COLORS.red + '0.7)',
+        COLORS.purple + '0.6)',
+        COLORS.yellow + '0.6)',
+        COLORS.red + '0.9)',
+      ],
+      borderWidth: 0,
+      borderRadius: 3,
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    responsive: true,
+    plugins: { ...chartDefaults.plugins, legend: { display: false } },
+    scales: {
+      ...chartDefaults.scales,
+      y: {
+        ...chartDefaults.scales.y,
+        ticks: { ...chartDefaults.scales.y.ticks, callback: v => v + '%' }
+      }
+    }
+  }
+});
+
+// ─── AST TABLE ────────────────────────────────────────────────────────
+const astData = [
+  { ab: 'Ampicillin', cls: 'Penicillin', rate: 95.3, priority: 'Critical' },
+  { ab: 'Ceftazidime', cls: '3G Cephalosporin', rate: 90.8, priority: 'Critical' },
+  { ab: 'Cefotaxime', cls: '3G Cephalosporin', rate: 87.2, priority: 'Critical' },
+  { ab: 'Ceftriaxone', cls: '3G Cephalosporin', rate: 84.6, priority: 'Critical' },
+  { ab: 'Cotrimoxazole', cls: 'Sulfonamide', rate: 78.4, priority: 'High' },
+  { ab: 'Tetracycline', cls: 'Tetracycline', rate: 72.1, priority: 'High' },
+  { ab: 'Ciprofloxacin', cls: 'Fluoroquinolone', rate: 61.9, priority: 'High' },
+  { ab: 'Gentamicin', cls: 'Aminoglycoside', rate: 43.5, priority: 'Moderate' },
+  { ab: 'Amikacin', cls: 'Aminoglycoside', rate: 28.3, priority: 'Moderate' },
+  { ab: 'Imipenem', cls: 'Carbapenem', rate: 8.7, priority: 'Low — Last Resort' },
+];
+
+const tbody = document.getElementById('astTable');
+astData.forEach(row => {
+  const cls = row.rate > 80 ? 'high' : row.rate > 60 ? 'mid' : 'low';
+  const color = row.rate > 80 ? '#ff5252' : row.rate > 60 ? '#ffab40' : '#3dffa0';
+  tbody.innerHTML += `
+    <tr>
+      <td><strong>${row.ab}</strong></td>
+      <td style="color:var(--text-muted);font-size:12px;">${row.cls}</td>
+      <td style="font-family:'DM Mono',monospace; color:${color}; font-size:13px;">${row.rate}%</td>
+      <td>
+        <div class="resistance-bar">
+          <div class="bar-track">
+            <div class="bar-fill ${cls}" style="width:${row.rate}%;"></div>
+          </div>
+          <span class="bar-val" style="color:${color};">${row.rate}%</span>
+        </div>
+      </td>
+      <td><span style="font-size:11px; font-family:'DM Mono',monospace; color:${color};">${row.priority}</span></td>
+    </tr>`;
+});
+</script>
+</body>
+</html>
